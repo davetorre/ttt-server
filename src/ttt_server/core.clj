@@ -1,35 +1,6 @@
 (ns ttt-server.core
-  (:require [ttt-server.server-io :refer :all]))
-
-(def board "Where the board goes.")
-
-(def form
-  "<form action=\"/move\" method=\"post\" >
-  <div>
-    <input name=\"the-move\">
-  </div>
-  <div class=\"button\">
-    <button type=\"submit\">Send</button>
-  </div>
-</form>")
-
-(def game-page
-  (str "<!DOCTYPE html><html><head></head><body>"
-       board
-       form
-       "</body></html"))
-
-(defn get-gamepage [request]
-  (new davetorre.httpserver.HTTPResponse
-       "HTTP/1.1 200 OK\n"
-       (new java.util.HashMap)
-       (.getBytes game-page)))
-
-(defn post-move [request]
-  (new davetorre.httpserver.HTTPResponse
-       "HTTP/1.1 200 OK\n"
-       (new java.util.HashMap)
-       (.body request)))
+  (:require [ttt-server.game :refer :all]
+            [ttt-server.db   :refer :all]))
 
 (defn make-route-lamb [function-to-call]
   (reify
@@ -42,9 +13,8 @@
 
 (def router
   (doto (new davetorre.httpserver.Router)
-    (.addRoute "GET /" (make-route-lamb get-gamepage))
-    (.addRoute "POST /move" (make-route-lamb post-move))))
-
+    (.addRoute "GET /new_game" (make-route-lamb get-new-game))
+    (.addRoute "POST /new_game" (make-route-lamb post-new-game))))
 
 (defn -main [& args]
   (let [server (new davetorre.httpserver.Server router)]
