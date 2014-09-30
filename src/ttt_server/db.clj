@@ -54,3 +54,17 @@
                    [(str "select " all-spaces
                          " from 3x3_game where id = ?") game-id]
                    :as-arrays? true)))
+
+(defn retrieve-space-in-game [game-id space-num]
+  (let [space-names (clojure.string/split all-spaces #", ")
+        space (nth space-names space-num)]
+    (first (j/query mysql-db
+                    [(str "select " space
+                          " from 3x3_game where id = ?") game-id]
+                    :row-fn (keyword space)))))
+
+(defn set-space-in-game [game-id space-num token]
+    (let [space-names (clojure.string/split all-spaces #", ")
+          space (nth space-names space-num)]
+      (j/update! mysql-db :3x3_game
+                 {(keyword space) token} ["id = ?" game-id])))

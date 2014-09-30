@@ -43,8 +43,31 @@
 
           (delete-game user-id game-name))))
 
+    (testing "Retrieves a space's value from game in database"
+      (let [user-id (retrieve-user-id user-name)
+            game-name "My Game"]
+        (add-game user-id game-name)
+
+        (let [game-id (retrieve-game-id user-id game-name)]
+          (jdbc/update! mysql-db :3x3_game {:space_one 2} ["id = ?" game-id])
+          (is (= 2 (retrieve-space-in-game game-id 1)))
+
+          (delete-game user-id game-name))))
     
+    (testing "Sets a space's value in game in database"
+      (let [user-id (retrieve-user-id user-name)
+            game-name "My Game"]
+        (add-game user-id game-name)
+
+        (let [game-id   (retrieve-game-id user-id game-name)
+              space-num 4
+              token     1]
+          (set-space-in-game game-id space-num token)
+          (is (= token (retrieve-space-in-game game-id space-num)))
+
+          (delete-game user-id game-name))))
     
+
+
     (delete-user user-name)
 ))
-
