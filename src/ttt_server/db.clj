@@ -43,3 +43,14 @@
                   ["select * from 3x3_game where player_one_id = ? and name = ?"
                    user-id game-name]
                   :row-fn :id)))
+
+(def all-spaces
+  (str "space_zero, space_one, space_two, "
+       "space_three, space_four, space_five, "
+       "space_six, space_seven, space_eight"))
+
+(defn retrieve-game-board [game-id]
+  (second (j/query mysql-db
+                   [(str "select " all-spaces
+                         " from 3x3_game where id = ?") game-id]
+                   :as-arrays? true)))
