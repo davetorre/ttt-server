@@ -2,52 +2,62 @@
   (:require [ttt-server.game :refer :all]
             [ttt-server.db   :refer :all]
             [clojure.test    :refer :all]))
-  
+
+(defn string-contains? [string substring]
+  (not (= -1 (.indexOf string substring))))
+
 (deftest game-test
   (let [user-name "A User"
         game-name "The Game"]
 
-    (def GET-request
+    (def GET-slash-request
       (new davetorre.httpserver.HTTPRequest
-           "GET /new_game HTTP/1.1"
+           "GET / HTTP/1.1"
            (new java.util.HashMap)
            (.getBytes "")))
 
-    (def POST-request
+    (def POST-game-request
       (new davetorre.httpserver.HTTPRequest
-           "POST /new_game HTTP/1.1"
+           "POST /game HTTP/1.1"
            (new java.util.HashMap)
            (.getBytes (str "user=" user-name "&game=" game-name))))
 
-    (testing "get-new-game returns an HTTPResponse with a form for a new game"
-      (let [response (get-new-game GET-request)
+    
+    (testing "GET-slash returns an HTTPResponse with a form for a new game"
+      (let [response (GET-slash GET-slash-request)
             body (new String (.body response))]
 
         (is (= "HTTP/1.1 200 OK\n" (.statusLine response)))
-        (is (not (= -1 (.indexOf body new-game-form))))))
-
-    (testing "get-form-values gets form values from POST request"
-      (is (= [user-name game-name]
-             (get-form-values POST-request))))
+        (is (string-contains? body form-for-new-game))))
     
-    (testing "post-new-game adds a new game to the game database"
+    (testing "get-values gets values from a string"
+      (is (= ["Val" "Mom" "OK"]
+             (get-values "Key=Val&Hi=Mom&Yes=OK"))) 
+      (is (= [user-name game-name]
+             (get-values (body-as-string POST-game-request)))))
+    
+    (testing "POST-game adds a new game to the game database"
       (add-user user-name)
 
       (let [user-id (retrieve-user-id user-name)]
         (is (not (game-exists? user-id game-name)))
-        (post-new-game POST-request)
+        (POST-game POST-game-request)
         (is (game-exists? user-id game-name))
 
         (delete-game user-id game-name)
         (delete-user user-name)))
 
-    (testing "post-new-game adds user if user doeesn't exist"
+    (testing "POST-game adds user if user doeesn't exist"
       (is (not (user-exists? user-name)))
-      (post-new-game POST-request)
+      (POST-game POST-game-request)
       (is (user-exists? user-name))
       
       (delete-game (retrieve-user-id user-name) game-name)
       (delete-user user-name))
 
-    
+    (testing "form-for-new-move adds game-id parameter to form action"
+      (let [game-id 523
+            form (form-for-new-move game-id)]
+        (is (string-contains? form "action=\"/game/move?game-id=523\""))))
+
 ))

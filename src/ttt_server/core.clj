@@ -13,8 +13,9 @@
 
 (def router
   (doto (new davetorre.httpserver.Router)
-    (.addRoute "GET /new_game" (make-route-lamb get-new-game))
-    (.addRoute "POST /new_game" (make-route-lamb post-new-game))))
+    (.addRoute "GET /" (make-route-lamb GET-slash))
+    (.addRoute "POST /game" (make-route-lamb POST-game))
+    (.addRoute "POST /game/move" (make-route-lamb POST-move))))
 
 (defn -main [& args]
   (let [server (new davetorre.httpserver.Server router)]
