@@ -1,17 +1,20 @@
 (ns ttt-server.game
-  (:require [ttt-server.db   :refer :all]
-            [ttt-server.html :refer :all]))
+  (:require [ttt-server.db     :refer :all]
+            [ttt-server.html   :refer :all]
+            [tic-tac-toe.board :refer :all]))
 
-(defn make-board [game-id]
-  "The board representation.")
+(defn make-board [board]
+  (-> (get-nice-board board)
+      (get-rows)
+      (make-table)))
 
 (defn make-game-page [game-id]
-  (new davetorre.httpserver.HTTPResponse
-       "HTTP/1.1 200 OK\n"
-       (new java.util.HashMap)
-       (.getBytes
-        (enclose-in-html
-         (str (make-board game-id) (form-for-new-move game-id))))))
+  (let [board (make-board (retrieve-game-board game-id)) 
+        form  (form-for-new-move game-id)]
+    (new davetorre.httpserver.HTTPResponse
+         "HTTP/1.1 200 OK\n"
+         (new java.util.HashMap)
+         (.getBytes (enclose-in-html (str board form))))))
 
 (defn GET-slash [request] 
   (new davetorre.httpserver.HTTPResponse

@@ -1,6 +1,7 @@
 (ns ttt-server.game-test
   (:require [ttt-server.game :refer :all]
             [ttt-server.db   :refer :all]
+            [ttt-server.html :refer :all]
             [clojure.test    :refer :all]))
 
 (defn string-contains? [string substring]
@@ -21,7 +22,6 @@
            "POST /game HTTP/1.1"
            (new java.util.HashMap)
            (.getBytes (str "user=" user-name "&game=" game-name))))
-
     
     (testing "GET-slash returns an HTTPResponse with a form for a new game"
       (let [response (GET-slash GET-slash-request)
@@ -55,9 +55,9 @@
       (delete-game (retrieve-user-id user-name) game-name)
       (delete-user user-name))
 
-    (testing "form-for-new-move adds game-id parameter to form action"
-      (let [game-id 523
-            form (form-for-new-move game-id)]
-        (is (string-contains? form "action=\"/game/move?game-id=523\""))))
+    (testing "make-board creates html-table version of board"
+      (= "<table><tr><td>0</td><td>1</td><td>2</td><td>X</td></table>"
+         (make-board [nil nil nil 0])))
 
+ 
 ))
