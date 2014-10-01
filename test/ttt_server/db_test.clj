@@ -31,8 +31,11 @@
       (is (= game-id (retrieve-game-id user-id game-name))))
     
     (testing "Retrieves board vector from game in database"
-      (jdbc/update! mysql-db :3x3_game {:space_one 2} ["id = ?" game-id])
-      (is (= [0 2 0 0 0 0 0 0 0] (retrieve-game-board game-id))))
+      (jdbc/update! mysql-db :3x3_game {:space_one 1} ["id = ?" game-id])
+      (is (= [nil 1 nil
+              nil nil nil
+              nil nil nil]
+             (retrieve-game-board game-id))))
 
     (testing "Retrieves a space's value from game in database"
       (let [space-num 3
@@ -42,7 +45,7 @@
     
     (testing "Sets a space's value in game in database"
       (let [space-num 4
-            token     2]
+            token     0]
         (set-space-in-game game-id space-num token)
         (is (= token (retrieve-space-in-game game-id space-num)))))
 
