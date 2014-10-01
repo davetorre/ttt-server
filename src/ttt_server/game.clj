@@ -1,32 +1,6 @@
 (ns ttt-server.game
-  (:require [ttt-server.db :refer :all]))
-
-(defn enclose-in-html [body]
-  (str "<!DOCTYPE html><html><head></head><body>"
-       body
-       "</body></html"))
-
-(def form-for-new-game
-  "<form action=\"/game\" method=\"post\">
-    <div>
-      <input name=\"user\" id=\"user\"/>
-      <label for=\"user\">User</label>
-    </div>
-    <div>
-      <input name=\"game\" id=\"game\"/>
-      <label for=\"game\">Game</label>
-    </div>
-    <button type=\"submit\">Submit</button>
-  </form>")
-
-(defn form-for-new-move [game-id]
-  (str "<form action=\"/game/move?game-id=" game-id "\" method=\"post\">
-    <div>
-      <input name=\"move\" id=\"move\"/>
-      <label for=\"move\">Move</label>
-    </div>
-    <button type=\"submit\">Submit</button>
-  </form>"))
+  (:require [ttt-server.db   :refer :all]
+            [ttt-server.html :refer :all]))
 
 (defn make-board [game-id]
   "The board representation.")
