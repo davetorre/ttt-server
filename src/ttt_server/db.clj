@@ -57,6 +57,9 @@
        "space_three, space_four, space_five, "
        "space_six, space_seven, space_eight"))
 
+(def space-names
+  (clojure.string/split all-spaces #", "))
+
 (defn retrieve-game-board [game-id]
   (second (j/query mysql-db
                    [(str "select " all-spaces
@@ -72,7 +75,10 @@
                     :row-fn (keyword space)))))
 
 (defn set-space-in-game [game-id space-num token]
-    (let [space-names (clojure.string/split all-spaces #", ")
-          space (nth space-names space-num)]
-      (j/update! mysql-db :3x3_game
-                 {(keyword space) token} ["id = ?" game-id])))
+  (let [space (nth space-names space-num)]
+    (j/update! mysql-db :3x3_game
+               {(keyword space) token} ["id = ?" game-id])))
+
+(defn reset-game-board [game-id]
+  (let [keys-to-nil-map (zipmap space-names (repeat nil))]
+    (j/update! mysql-db :3x3_game keys-to-nil-map ["id = ?" game-id])))

@@ -3,7 +3,7 @@
 (defn enclose-in-html [body]
   (str "<!DOCTYPE html><html><head></head><body>"
        body
-       "</body></html"))
+       "</body></html>"))
 
 (def form-for-new-game
   "<form action=\"/game\" method=\"post\">

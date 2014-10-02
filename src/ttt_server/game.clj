@@ -29,12 +29,16 @@
 (defn body-as-string [request]
   (new String (.body request)))
 
+(defn make-move [game-id move]
+  
+  )
+
 (defn POST-move [request]
   (let [game-id (first (get-values (.parameters request)))
         move (first (get-values (body-as-string request)))]
     ;(make-move-in-game game-id move)
     (make-game-page game-id)))
-  
+
 (defn POST-game [request]
   (let [form-values (get-values (body-as-string request))
         user-name (first form-values)

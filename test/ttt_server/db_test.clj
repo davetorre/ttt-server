@@ -66,23 +66,42 @@
 
     (testing "Retrieves board vector from game in database"
       (jdbc/update! mysql-db :3x3_game {:space_one 1} ["id = ?" game-id])
-      (is (= [nil 1 nil
+      (is (= [nil 1   nil
               nil nil nil
               nil nil nil]
-             (retrieve-game-board game-id))))
+             (retrieve-game-board game-id)))
+
+      (jdbc/update! mysql-db :3x3_game {:space_one nil} ["id = ?" game-id]))
 
     (testing "Retrieves a space's value from game in database"
       (let [space-num 3
             token     1]
         (jdbc/update! mysql-db :3x3_game {:space_three token} ["id = ?" game-id])
-        (is (= token (retrieve-space-in-game game-id space-num)))))
+        (is (= token (retrieve-space-in-game game-id space-num)))
+
+        (jdbc/update! mysql-db :3x3_game {:space_three nil} ["id = ?" game-id])))
     
     (testing "Sets a space's value in game in database"
       (let [space-num 4
             token     0]
         (set-space-in-game game-id space-num token)
-        (is (= token (retrieve-space-in-game game-id space-num)))))
+        (is (= token (retrieve-space-in-game game-id space-num)))
 
+        (set-space-in-game game-id space-num nil)))
+
+    (testing "Resets game board in game in database"
+      (set-space-in-game game-id 0 0)
+      (set-space-in-game game-id 4 1)
+      (set-space-in-game game-id 6 0)
+      (is (= [0 nil nil nil 1 nil 0 nil nil]
+             (retrieve-game-board game-id)))
+
+      (reset-game-board game-id)
+      (is (= [nil nil nil nil nil nil nil nil nil]
+             (retrieve-game-board game-id))))
+
+
+    ; Teardown needs to always happen, even if there's an error in the tests
     (delete-game user-id game-name)
     (delete-user user-name))
 
