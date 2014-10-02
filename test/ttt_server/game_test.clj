@@ -1,8 +1,9 @@
 (ns ttt-server.game-test
-  (:require [ttt-server.game :refer :all]
-            [ttt-server.db   :refer :all]
-            [ttt-server.html :refer :all]
-            [clojure.test    :refer :all]))
+  (:require [ttt-server.game   :refer :all]
+            [ttt-server.db     :refer :all]
+            [ttt-server.html   :refer :all]
+            [tic-tac-toe.board :refer :all]
+            [clojure.test      :refer :all]))
 
 (defn string-contains? [string substring]
   (not (= -1 (.indexOf string substring))))
@@ -49,14 +50,18 @@
       (= "<table><tr><td>0</td><td>1</td><td>2</td><td>X</td></table>"
          (make-board [nil nil nil 0])))
 
-    (testing "Given an invalid move, make-move doesn't change board in db"
-      (let [invalid-move "bad move"
-            game-board-before-move (retrieve-game-board game-id)]
+    (testing "With invalid move, make-human-move returns the board it was given"
+      (let [invalid-move-1 "bad move"
+            invalid-move-2 "3"
+            board [nil nil nil 1 0 0 nil nil nil]]
         
-        (make-move game-id invalid-move)
-        (is (= game-board-before-move (retrieve-game-board game-id)))))
+        (is (= board (make-human-move board invalid-move-1)))
+        (is (= board (make-human-move board invalid-move-2)))))
 
-    (testing "Given a valid move, make-move marks space in db")
+    (testing "Given a valid move, make-human-move marks space in board"
+      (let [board (gen-board)]
+        (is (= [nil nil nil nil nil nil nil 0 nil]
+             (make-human-move board "7")))))
     
     (testing "Given an invalid move, POST-move returns same html page again"
       (let [invalid-move "bad move"

@@ -1,7 +1,8 @@
 (ns ttt-server.game
-  (:require [ttt-server.db     :refer :all]
-            [ttt-server.html   :refer :all]
-            [tic-tac-toe.board :refer :all]))
+  (:require [ttt-server.db      :refer :all]
+            [ttt-server.html    :refer :all]
+            [tic-tac-toe.board  :refer :all]
+            [tic-tac-toe.player :refer :all]))
 
 (defn make-board [board]
   (-> (get-nice-board board)
@@ -29,9 +30,12 @@
 (defn body-as-string [request]
   (new String (.body request)))
 
-(defn make-move [game-id move]
-  
-  )
+(defn make-human-move [board move]
+  (let [open-spaces (get-open-spaces board)
+        open-spaces-strings (map #(str %) open-spaces)]
+    (if (contains? (set open-spaces-strings) move)
+      (set-space board (Integer/parseInt move) (get-token board))
+      board)))
 
 (defn POST-move [request]
   (let [game-id (first (get-values (.parameters request)))
