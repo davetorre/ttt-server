@@ -8,19 +8,19 @@
       (get-rows)
       (make-table)))
 
-(defn make-game-page [game-id]
-  (let [board (make-board (retrieve-game-board game-id)) 
-        form  (form-for-new-move game-id)]
-    (new davetorre.httpserver.HTTPResponse
-         "HTTP/1.1 200 OK\n"
-         (new java.util.HashMap)
-         (.getBytes (enclose-in-html (str board form))))))
-
-(defn GET-slash [request] 
+(defn response-with-body [body]
   (new davetorre.httpserver.HTTPResponse
        "HTTP/1.1 200 OK\n"
        (new java.util.HashMap)
-       (.getBytes (enclose-in-html form-for-new-game))))
+       (.getBytes body)))
+
+(defn make-game-page [game-id]
+  (let [board (make-board (retrieve-game-board game-id)) 
+        form  (form-for-new-move game-id)]
+    (response-with-body (enclose-in-html (str board form)))))
+
+(defn GET-slash [request]
+  (response-with-body (enclose-in-html form-for-new-game)))
 
 (defn get-values [some-string]
   (let [key-value-pairs (clojure.string/split some-string #"&")]
@@ -38,10 +38,7 @@
 (defn POST-game [request]
   (let [form-values (get-values (body-as-string request))
         user-name (first form-values)
-        game-name (second form-values)]
-
-    (if-not (user-exists? user-name) (add-user user-name))
-
-    (let [user-id (retrieve-user-id user-name)]
-      (add-game user-id game-name)
-      (make-game-page (retrieve-game-id user-id game-name)))))
+        game-name (second form-values)
+        user-id (retrieve-user-id user-name)
+        game-id (retrieve-game-id user-id game-name)]
+    (make-game-page game-id)))

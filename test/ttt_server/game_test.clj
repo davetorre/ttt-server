@@ -35,25 +35,6 @@
              (get-values "Key=Val&Hi=Mom&Yes=OK"))) 
       (is (= [user-name game-name]
              (get-values (body-as-string POST-game-request)))))
-    
-    (testing "POST-game adds a new game to the game database"
-      (add-user user-name)
-
-      (let [user-id (retrieve-user-id user-name)]
-        (is (not (game-exists? user-id game-name)))
-        (POST-game POST-game-request)
-        (is (game-exists? user-id game-name))
-
-        (delete-game user-id game-name)
-        (delete-user user-name)))
-
-    (testing "POST-game adds user if user doeesn't exist"
-      (is (not (user-exists? user-name)))
-      (POST-game POST-game-request)
-      (is (user-exists? user-name))
-      
-      (delete-game (retrieve-user-id user-name) game-name)
-      (delete-user user-name))
 
     (testing "make-board creates html-table version of board"
       (= "<table><tr><td>0</td><td>1</td><td>2</td><td>X</td></table>"

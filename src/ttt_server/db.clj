@@ -18,10 +18,14 @@
 (defn delete-user [name]
   (j/delete! mysql-db :user ["name = ?" name]))
 
-(defn retrieve-user-id [name]
+(defn retrieve-user-id
+  "Returns a user's id. If user doesn't exist, creates user."
+  [name]
+  (if-not (user-exists? name)
+    (add-user name))
   (first (j/query mysql-db
-                  ["select * from user where name = ?" name]
-                  :row-fn :id)))
+                    ["select * from user where name = ?" name]
+                    :row-fn :id)))
 
 (defn game-exists? [player-one-id game-name]
   (< 0 (count
@@ -38,7 +42,11 @@
   (j/delete! mysql-db :3x3_game
              ["name = ? and player_one_id = ?" game-name, user-id]))
 
-(defn retrieve-game-id [user-id game-name]
+(defn retrieve-game-id
+  "Returns a game's id. If game doesn't exist, creates game."
+  [user-id game-name]
+  (if-not (game-exists? user-id game-name)
+    (add-game user-id game-name))
   (first (j/query mysql-db
                   ["select * from 3x3_game where player_one_id = ? and name = ?"
                    user-id game-name]
