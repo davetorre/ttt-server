@@ -39,8 +39,14 @@
 
 (defn POST-move [request]
   (let [game-id (first (get-values (.parameters request)))
-        move (first (get-values (body-as-string request)))]
-    ;(make-move-in-game game-id move)
+        move (first (get-values (body-as-string request)))
+        board (retrieve-game-board game-id)
+        board-after-human-move (make-human-move board move)]
+
+    (if-not (= board board-after-human-move)
+      (set-game-board game-id
+                      (make-move (new-minmax-player) board-after-human-move)))
+
     (make-game-page game-id)))
 
 (defn POST-game [request]

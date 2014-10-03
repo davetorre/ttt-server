@@ -82,3 +82,7 @@
 (defn reset-game-board [game-id]
   (let [keys-to-nil-map (zipmap space-names (repeat nil))]
     (j/update! mysql-db :3x3_game keys-to-nil-map ["id = ?" game-id])))
+
+(defn set-game-board [game-id board]
+  (let [keys-to-board-vals (zipmap space-names board)]
+    (j/update! mysql-db :3x3_game keys-to-board-vals ["id = ?" game-id])))

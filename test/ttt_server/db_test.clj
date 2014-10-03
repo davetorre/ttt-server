@@ -100,6 +100,14 @@
       (is (= [nil nil nil nil nil nil nil nil nil]
              (retrieve-game-board game-id))))
 
+    (testing "Sets game board in game in database"
+      (let [board [0 1 0 1 1 0 nil nil nil]]
+
+        (set-game-board game-id board)
+        (is (= board
+               (retrieve-game-board game-id)))
+
+        (reset-game-board game-id)))
 
     ; Teardown needs to always happen, even if there's an error in the tests
     (delete-game user-id game-name)

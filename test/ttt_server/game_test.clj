@@ -62,7 +62,7 @@
       (let [board (gen-board)]
         (is (= [nil nil nil nil nil nil nil 0 nil]
              (make-human-move board "7")))))
-    
+
     (testing "Given an invalid move, POST-move returns same html page again"
       (let [invalid-move "bad move"
             response-before-move (make-game-page game-id)
@@ -71,7 +71,14 @@
         (is (= (new String (.body response-before-move))
                (new String (.body (POST-move the-request)))))))
 
-    (testing "Given valid move, POST-move returns html page with updated board")
+    (testing "Given a valid move, POST-move marks space in game database"
+      (let [move "7"
+            space-num (Integer/parseInt move)
+            the-request (make-POST-move-request game-id move)]
+
+        (is (nil? (retrieve-space-in-game game-id space-num)))
+        (POST-move the-request)
+        (is (not (nil? (retrieve-space-in-game game-id space-num))))))
     
     
     (delete-game user-id game-name)
