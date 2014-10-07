@@ -15,19 +15,19 @@
         game-id (first (vals (first (add-game user-id game-name))))]
     
     (def GET-slash-request
-      (new davetorre.httpserver.HTTPRequest
+      (new httpserver.HTTPRequest
            "GET / HTTP/1.1"
            (new java.util.HashMap)
            (.getBytes "")))
 
     (def POST-game-request
-      (new davetorre.httpserver.HTTPRequest
+      (new httpserver.HTTPRequest
            "POST /game HTTP/1.1"
            (new java.util.HashMap)
            (.getBytes (str "user=" user-name "&game=" game-name))))
 
     (defn make-POST-move-request [game-id move]
-      (new davetorre.httpserver.HTTPRequest
+      (new httpserver.HTTPRequest
            (str "POST /game/move HTTP/1.1")
            (str "game-id=" game-id)
            (new java.util.HashMap)
@@ -46,9 +46,9 @@
       (is (= [user-name game-name]
              (get-values (body-as-string POST-game-request)))))
 
-    (testing "make-board creates html-table version of board"
+    (testing "make-html-board creates html-table version of board"
       (= "<table><tr><td>0</td><td>1</td><td>2</td><td>X</td></table>"
-         (make-board [nil nil nil 0])))
+         (make-html-board [nil nil nil 0])))
 
     (testing "With invalid move, make-human-move returns the board it was given"
       (let [invalid-move-1 "bad move"

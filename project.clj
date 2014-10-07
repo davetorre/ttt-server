@@ -8,7 +8,7 @@
                  [mysql/mysql-connector-java "5.1.25"]
                  [org.clojure/java.jdbc "0.3.5"]
                  [hiccup "1.0.5"]]
-  :resource-paths ["resources/httpserver-1.0-SNAPSHOT.jar"]
+  :resource-paths ["resources/HTTPServer.jar"]
   :main ^:skip-aot ttt-server.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}})

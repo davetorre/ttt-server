@@ -27,6 +27,9 @@
     <button type=\"submit\">Submit</button>
   </form>"))
 
+(defn enclose-in-p-tags [status]
+  (str "<p>" status "</p>"))
+
 (defn make-row [row]
   (str "<tr>"
        (-> (map #(str "<td>" % "</td>") row)

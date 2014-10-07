@@ -4,19 +4,19 @@
 
 (defn make-route-lamb [function-to-call]
   (reify
-    davetorre.httpserver.ResponderCreator
+    httpserver.ResponderCreator
     (create [this]
       (reify
-        davetorre.httpserver.Responder
+        httpserver.Responder
         (respond [this request]
           (function-to-call request))))))
 
 (def router
-  (doto (new davetorre.httpserver.Router)
+  (doto (new httpserver.DefaultRouter)
     (.addRoute "GET /" (make-route-lamb GET-slash))
     (.addRoute "POST /game" (make-route-lamb POST-game))
     (.addRoute "POST /game/move" (make-route-lamb POST-move))))
 
 (defn -main [& args]
-  (let [server (new davetorre.httpserver.Server router)]
+  (let [server (new httpserver.Server router)]
     (.serve server 5000)))

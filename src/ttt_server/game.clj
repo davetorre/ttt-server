@@ -2,23 +2,35 @@
   (:require [ttt-server.db      :refer :all]
             [ttt-server.html    :refer :all]
             [tic-tac-toe.board  :refer :all]
-            [tic-tac-toe.player :refer :all]))
+            [tic-tac-toe.player :refer :all]
+            [tic-tac-toe.rules  :refer :all]))
 
-(defn make-board [board]
+(defn make-html-board [board]
   (-> (get-nice-board board)
       (get-rows)
       (make-table)))
 
 (defn response-with-body [body]
-  (new davetorre.httpserver.HTTPResponse
-       "HTTP/1.1 200 OK\n"
+  (new httpserver.HTTPResponse
+       "HTTP/1.1 200 OK"
        (new java.util.HashMap)
        (.getBytes body)))
 
+(defn make-game-status [board]
+  (if (game-over? board)
+    (let [token (get-winner board)
+          player (get-player-string token)]
+      (if token
+        (str "Game over. " player " wins!")
+        ("Game over. Draw.")))
+    " "))
+
 (defn make-game-page [game-id]
-  (let [board (make-board (retrieve-game-board game-id)) 
-        form  (form-for-new-move game-id)]
-    (response-with-body (enclose-in-html (str board form)))))
+  (let [board (retrieve-game-board game-id)
+        html-board (make-html-board board) 
+        form  (form-for-new-move game-id)
+        status (enclose-in-p-tags (make-game-status board))]
+    (response-with-body (enclose-in-html (str html-board form status)))))
 
 (defn GET-slash [request]
   (response-with-body (enclose-in-html form-for-new-game)))
