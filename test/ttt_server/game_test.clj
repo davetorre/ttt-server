@@ -37,7 +37,7 @@
       (let [response (GET-slash GET-slash-request)
             body (new String (.body response))]
 
-        (is (= "HTTP/1.1 200 OK\n" (.statusLine response)))
+        (is (= "HTTP/1.1 200 OK" (.statusLine response)))
         (is (string-contains? body form-for-new-game))))
     
     (testing "get-values gets values from a string"

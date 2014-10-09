@@ -4,12 +4,24 @@
             [clojure.java.jdbc :as jdbc]))
 
 (deftest db-test
+
+  (testing "Creates user table if doesn't exist"
+    (jdbc/execute! mysql-db ["drop table user"])
+    (is (not (table-exists? "user")))
+    (user-table)
+    (is (table-exists? "user")))
+
+  (testing "Creates game table if doesn't exist"
+    (jdbc/execute! mysql-db ["drop table 3x3_game"])
+    (is (not (table-exists? "3x3_game")))
+    (game-table)
+    (is (table-exists? "3x3_game")))  
   
   (let [user-name "Test User"
         game-name "Test Game"
         user-id (first (vals (first (add-user user-name))))
         game-id (first (vals (first (add-game user-id game-name))))]
-
+    
     (testing "Adds and deletes a user"
       (let [name "Some User"]
         (add-user name)
