@@ -1,10 +1,8 @@
 (ns ttt-server.db
-  (:require [clojure.java.jdbc :as jdbc]))
+  (:require [clojure.java.jdbc :as jdbc]
+            [environ.core :refer [env]]))
 
-(def mysql-db {:subprotocol "mysql"
-               :subname "//127.0.0.1:3306/ttt_server"
-               :user "admin"
-               :password "password"})
+(def mysql-db (load-string (slurp (env :db-config-file))))
 
 (defn user-exists? [name]
   (< 0 (count (jdbc/query mysql-db

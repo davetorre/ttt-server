@@ -7,8 +7,10 @@
                  [tic_tac_toe "0.1.0-SNAPSHOT"]
                  [mysql/mysql-connector-java "5.1.25"]
                  [org.clojure/java.jdbc "0.3.5"]
-                 [hiccup "1.0.5"]]
-  :resource-paths ["resources/HTTPServer.jar"]
+                 [environ "1.0.0"]]
+  :plugins [[lein-environ "1.0.0"]]
   :main ^:skip-aot ttt-server.core
   :target-path "target/%s"
-  :profiles {:uberjar {:aot :all}})
+  :resource-paths ["resources/HTTPServer.jar"]
+  :profiles {:uberjar {:aot :all}
+             :dev {:env {:db-config-file "resources/dev_config.edn"}}})
