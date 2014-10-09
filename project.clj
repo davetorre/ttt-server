@@ -13,4 +13,6 @@
   :target-path "target/%s"
   :resource-paths ["resources/HTTPServer.jar"]
   :profiles {:uberjar {:aot :all}
-             :dev {:env {:db-config-file "resources/dev_config.edn"}}})
+             :dev {:env {:db-config-file "resources/config_dev.edn"}}
+             :test {:env {:db-config-file "resources/config_test.edn"}}}
+  :aliases {"test" ["with-profile" "test" "test"]})

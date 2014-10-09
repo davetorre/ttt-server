@@ -6,13 +6,17 @@
 (deftest db-test
 
   (testing "Creates user table if doesn't exist"
-    (jdbc/execute! mysql-db ["drop table user"])
+    (if (table-exists? "user")
+      (jdbc/execute! mysql-db ["drop table user"]))
+
     (is (not (table-exists? "user")))
     (user-table)
     (is (table-exists? "user")))
 
   (testing "Creates game table if doesn't exist"
-    (jdbc/execute! mysql-db ["drop table 3x3_game"])
+    (if (table-exists? "3x3_game")
+      (jdbc/execute! mysql-db ["drop table 3x3_game"]))
+    
     (is (not (table-exists? "3x3_game")))
     (game-table)
     (is (table-exists? "3x3_game")))  
@@ -124,7 +128,6 @@
     ; Teardown needs to always happen, even if there's an error in the tests
     (delete-game user-id game-name)
     (delete-user user-name))
-
 
 
   )
