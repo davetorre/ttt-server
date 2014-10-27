@@ -65,6 +65,13 @@
                            " where name = ?") name]
                      :row-fn :id)))
 
+(defn retrieve-user-name [id]
+  (first (jdbc/query mysql-db
+                     [(str "select * from " (key-to-str (user-table))
+                           " where id = ?") id]
+                     :row-fn :name))
+  )
+
 (defn find-games-with [player-one-id game-name]
   (jdbc/query mysql-db
               [(str "select * from " (key-to-str (game-table))

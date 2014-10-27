@@ -3,10 +3,8 @@
             [ttt-server.db     :refer :all]
             [ttt-server.html   :refer :all]
             [tic-tac-toe.board :refer :all]
-            [clojure.test      :refer :all]))
-
-(defn string-contains? [string substring]
-  (not (= -1 (.indexOf string substring))))
+            [clojure.test      :refer :all]
+            [ttt-server.test-helper :as helper]))
 
 (deftest game-test
   (let [user-name "A User"
@@ -38,7 +36,7 @@
             body (new String (.body response))]
 
         (is (= "HTTP/1.1 200 OK" (.statusLine response)))
-        (is (string-contains? body form-for-new-game))))
+        (is (helper/string-contains? body form-for-new-game))))
     
     (testing "make-html-board creates html-table version of board"
       (= "<table><tr><td>0</td><td>1</td><td>2</td><td>X</td></table>"

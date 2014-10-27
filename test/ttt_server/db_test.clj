@@ -61,7 +61,12 @@
     (testing "retrieve-user-id returns correct id of new user"
       (let [new-name "New User 2"
             user-id (retrieve-user-id new-name)]
-        (is (= user-id (retrieve-user-id new-name)))))))
+        (is (= user-id (retrieve-user-id new-name)))))
+    
+    (testing "Retrieves a user's name"
+      (let [new-name "New User 3"
+            user-id (retrieve-user-id new-name)]
+        (is (= new-name (retrieve-user-name user-id)))))))
 
 (deftest game-test
   (let [user-name "Cookie Monster"
