@@ -40,12 +40,6 @@
         (is (= "HTTP/1.1 200 OK" (.statusLine response)))
         (is (string-contains? body form-for-new-game))))
     
-    (testing "get-values gets values from a string"
-      (is (= ["Val" "Mom" "OK"]
-             (get-values "Key=Val&Hi=Mom&Yes=OK"))) 
-      (is (= [user-name game-name]
-             (get-values (body-as-string POST-game-request)))))
-
     (testing "make-html-board creates html-table version of board"
       (= "<table><tr><td>0</td><td>1</td><td>2</td><td>X</td></table>"
          (make-html-board [nil nil nil 0])))
