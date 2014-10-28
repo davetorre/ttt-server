@@ -5,5 +5,7 @@
 
 (defn GET-user [request]
   (let [user-id (first (http/get-values (http/body-as-string request)))
-        user-name (db/retrieve-user-name user-id)]
-    (http/response-with-body user-name)))
+        user-name (db/retrieve-user-name user-id)
+        game-names (vec (db/find-game-names-for-user user-id))
+        game-list (clojure.string/join "\n" game-names)]
+    (http/response-with-body (str user-name "\n" game-list))))

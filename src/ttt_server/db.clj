@@ -69,8 +69,7 @@
   (first (jdbc/query mysql-db
                      [(str "select * from " (key-to-str (user-table))
                            " where id = ?") id]
-                     :row-fn :name))
-  )
+                     :row-fn :name)))
 
 (defn find-games-with [player-one-id game-name]
   (jdbc/query mysql-db
@@ -78,6 +77,13 @@
                     " where player_one_id = ? and name = ?")
                player-one-id game-name]
               :row-fn :id))
+
+(defn find-game-names-for-user [user-id]
+  (jdbc/query mysql-db
+              [(str "select * from " (key-to-str (game-table))
+                    " where player_one_id = ?")
+               user-id]
+              :row-fn :name))
 
 (defn game-exists? [player-one-id game-name]
   (< 0 (count (find-games-with player-one-id game-name))))

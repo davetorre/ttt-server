@@ -99,7 +99,15 @@
     (testing "retrieve-game-id returns correct id of new game"
       (let [game-id (retrieve-game-id user-id game-name)]
         (is (= game-id (retrieve-game-id user-id game-name)))
-        (delete-game user-id game-name)))))
+        (delete-game user-id game-name)))
+    
+    (testing "Retrieves list of a user's games"
+      (let [game-names ["Game 1" "Game 2" "Third"]]
+        (doseq [n game-names]
+          (add-game user-id n))
+        (is (= game-names (find-game-names-for-user user-id)))
+        (doseq [n game-names]
+          (delete-game user-id n))))))
 
 (deftest spaces-board-test
   (let [user-name "Chicago Bulls"

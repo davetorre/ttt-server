@@ -5,12 +5,6 @@
             [ttt-server.db          :as db]))
 
 (deftest user-test
-  (def GET-user-request
-    (new httpserver.HTTPRequest
-         "GET /user HTTP/1.1"
-         (new java.util.HashMap)
-         (.getBytes "")))
-
   (defn make-GET-user-request [user-id]
     (new httpserver.HTTPRequest
          (str "GET /user HTTP/1.1")
@@ -34,6 +28,11 @@
         (is (= "HTTP/1.1 200 OK" (.statusLine response)))
         (is (helper/string-contains? body user-name))))
      
-     )
-  
-  )
+    (testing "GET-user returns an HTTPResponse containing the user's games"
+      (let [request (make-GET-user-request user-id)
+            response (GET-user request)
+            body (new String (.body response))]
+        (is (helper/string-contains? body game1-name))
+        (is (helper/string-contains? body game2-name))
+        (is (helper/string-contains? body game3-name))))))
+
